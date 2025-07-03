@@ -10,9 +10,10 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 //@desc Create new user
-//@route PPST /api/users
+//@route POST /api/users
 //@access Public
 
+/*
 const createUser = asyncHandler(async (req, res) => {
     console.log("The request is:",req.body);
     const {username, email, password} = req.body;
@@ -28,6 +29,7 @@ const createUser = asyncHandler(async (req, res) => {
     });
     res.status(201).json(user);
 });
+*/
 
 //@desc Update a user
 //@route PUT /api/users/:id
@@ -77,7 +79,6 @@ const getUser = asyncHandler(async(req, res) => {
 
 module.exports = { 
     getUsers,
-    createUser,
     updateUser,
     deleteUser,
     getUser
