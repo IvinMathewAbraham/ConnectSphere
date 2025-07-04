@@ -6,7 +6,10 @@
 
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
+
+
 
 
 //@desc Register new user
@@ -56,7 +59,36 @@ const registerUser = asyncHandler(async (req, res) => {
 //@access Public
 
 const loginUser = asyncHandler(async (req, res) => {
-    res.json({ message: 'Login user' });
+     const {email, password} = req.body;
+    if (!email || !password){
+        res.status(400);
+        throw new Error('All fields are required');
+    }
+
+    const user = await userModel.findOne({ email });
+
+    //compare password with hashed password 
+    if (user && (await bcrypt.compare(password, user.password))) {
+        // Create JWT token
+        const accessToken = jwt.sign(
+            {
+                user:{
+                    username: user.username,
+                    email: user.email,
+                    id: user.id,
+                },
+            },process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: '30m' // Token expiration time
+            }
+        ); 
+        res.status(200).json({ accessToken });
+    } else {
+        res.status(401);
+        throw new Error('Invalid email or password');
+    }
+     res.json({ message: 'login user' });
+
 });
 
 //@desc Logout user
@@ -64,6 +96,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access Public
 
 const logoutUser = asyncHandler(async (req, res) => {
+   
     res.json({ message: 'Logout user' });
 });
 

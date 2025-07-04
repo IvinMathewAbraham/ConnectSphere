@@ -1,0 +1,27 @@
+{
+  "name": "connectsphere",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run backend:dev\"",
+    "start": "concurrently \"npm run backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvinMathewAbraham/ConnectSphere.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvinMathewAbraham/ConnectSphere/issues"
+  },
+  "homepage": "https://github.com/IvinMathewAbraham/ConnectSphere#readme",
+  "description": ""
+  
+}
