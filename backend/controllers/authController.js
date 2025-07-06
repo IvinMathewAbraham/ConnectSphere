@@ -1,7 +1,7 @@
-//POST /api/auth/registerUser - User registration
-//POST /api/auth/loginUser - User login
-//POST /api/auth/logoutUser - User logout
-//GET /api/auth/getCurrentUser - Get current user info
+//POST /api/auth/register - User registration
+//POST /api/auth/login - User login
+//POST /api/auth/logout - User logout
+//GET /api/auth/current - Get current user info
 
 
 const asyncHandler = require('express-async-handler');
@@ -79,7 +79,7 @@ const loginUser = asyncHandler(async (req, res) => {
                 },
             },process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn: '30m' // Token expiration time
+                expiresIn: '30d' // Token expiration time
             }
         ); 
         res.status(200).json({ accessToken });
@@ -101,11 +101,11 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 //@desc Get current user info
-//@route POST /api/auth
+//@route GET /api/auth
 //@access Private
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-    res.json({ message: 'Current user info' });
+    res.json(req.user);
 });
 
 
