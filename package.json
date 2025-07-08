@@ -22,6 +22,8 @@
     "url": "https://github.com/IvinMathewAbraham/ConnectSphere/issues"
   },
   "homepage": "https://github.com/IvinMathewAbraham/ConnectSphere#readme",
-  "description": ""
-  
+  "description": "",
+  "dependencies": {
+    "cookie-parser": "^1.4.7"
+  }
 }

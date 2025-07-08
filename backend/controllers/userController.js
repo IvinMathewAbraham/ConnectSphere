@@ -9,28 +9,6 @@ const getUsers = asyncHandler(async (req, res) => {
     res.status(200).json(user);
 });
 
-//@desc Create new user
-//@route POST /api/users
-//@access Public
-
-/*
-const createUser = asyncHandler(async (req, res) => {
-    console.log("The request is:",req.body);
-    const {username, email, password} = req.body;
-    if(!username || !email || !password) {
-        res.status(400);
-        throw new Error('Please add a name and email');
-    }
-
-    const user = await userModel.create({
-        username,
-        email,
-        password
-    });
-    res.status(201).json(user);
-});
-*/
-
 //@desc Update a user
 //@route PUT /api/users/:id
 //@access Public

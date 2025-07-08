@@ -1,50 +1,59 @@
-//POST /api/auth/register - User registration
-//POST /api/auth/login - User login
-//POST /api/auth/logout - User logout
-//GET /api/auth/current - Get current user info
 
 
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
+const { json } = require('express');
+const { generateToken } = require('../middleware/validateTokenHandler');
 
 
 
 
-//@desc Register new user
+//@desc signup
 //@route POST /api/auth
-//@access Public
 
-const registerUser = asyncHandler(async (req, res) => {
+
+const signup = asyncHandler(async (req, res) => {
     console.log("The request is:",req.body);
     const {username, email, password} = req.body;
+
     if(!username || !email || !password) {
         res.status(400);
-        throw new Error('Please add a name and email');
+        throw new Error('All Fields are mandatory!!');
+    }
+    if(password.length < 8){
+        res.status(400);
+        throw new Error('minimum password length is 8');
     }
 
     // Check if user already exists
     const userExists = await userModel.findOne({ email });
     if (userExists) {
         res.status(400);
-        throw new Error('User already exists');
+        throw new Error('User already exists! Try another one');
     }
-    // Hash the password
-    const hashPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed password:", hashPassword);
 
-    const user = await userModel.create({
-        username,
-        email,
+    // Hash the password
+    const salt = await bcrypt.genSalt(10)
+    const hashPassword = await bcrypt.hash(password, salt);
+
+    const newUser = await userModel.create({
+        username:username,
+        email:email,
         password: hashPassword
     });
+
     // If user is created successfully, you can send a response
-    if(user) {
+    if(newUser) {
+        generateToken(newUser._id,res)
+        await newUser.save();
         res.status(201).json({
-            _id: user.id,
-            email: user.email,
-        });
+            _id: newUser._id,
+            username: newUser.username,
+            email:newUser.email,
+            profilePic:newUser.profilePic,
+    })
     } else {
         res.status(400);
         throw new Error('Invalid user data');
@@ -56,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 //@desc Login user
 //@route POST /api/auth
-//@access Public
+
 
 const loginUser = asyncHandler(async (req, res) => {
      const {email, password} = req.body;
@@ -67,37 +76,43 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const user = await userModel.findOne({ email });
 
-    //compare password with hashed password 
-    if (user && (await bcrypt.compare(password, user.password))) {
-        // Create JWT token
-        const accessToken = jwt.sign(
-            {
-                user:{
-                    username: user.username,
-                    email: user.email,
-                    id: user.id,
-                },
-            },process.env.ACCESS_TOKEN_SECRET,
-            {
-                expiresIn: '30d' // Token expiration time
-            }
-        ); 
-        res.status(200).json({ accessToken });
-    } else {
-        res.status(401);
-        throw new Error('Invalid email or password');
+    if(!user){
+         res.status(400);
+        throw new Error('Invalid credentials');
     }
-     res.json({ message: 'login user' });
+
+    //compare password with hashed password 
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if(!isPasswordCorrect){
+        res.status(400);
+        throw new Error('Invalid credentials');
+    }
+
+    generateToken(user._id,res)
+
+    res.status(201).json({
+            _id: user._id,
+            username: user.username,
+            email:user.email,
+            profilePic:user.profilePic,
+    })
+
 
 });
 
 //@desc Logout user
 //@route POST /api/auth
-//@access Public
+
 
 const logoutUser = asyncHandler(async (req, res) => {
    
-    res.json({ message: 'Logout user' });
+    try {
+        res.cookie("jwt","",{maxAGE:0})
+        res.status(200).json({message:"Logged out sucessfully"});
+    } catch (error) {
+        console.log("Error in logout controller",error.message);
+           res.status(500).json({message:"Internal server error"});
+    }
 });
 
 //@desc Get current user info
@@ -111,7 +126,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 
 module.exports = {
-    registerUser,
+    signup,
     loginUser,
     logoutUser,
     getCurrentUser
