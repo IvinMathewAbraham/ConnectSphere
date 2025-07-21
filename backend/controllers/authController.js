@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const { json } = require('express');
-const { generateToken } = require('../middleware/validateTokenHandler');
+const { generateToken } = require('../middleware/generateToken');
+const cloudinary = require( '../config/cloudinary.js'); 
 
 
 
@@ -111,16 +112,32 @@ const logoutUser = asyncHandler(async (req, res) => {
         res.status(200).json({message:"Logged out sucessfully"});
     } catch (error) {
         console.log("Error in logout controller",error.message);
-           res.status(500).json({message:"Internal server error"});
+        res.status(500).json({message:"Internal server error"});
     }
 });
 
-//@desc Get current user info
-//@route GET /api/auth
+//@desc Put current user profile
+//@route PUT /api/auth
 //@access Private
 
-const getCurrentUser = asyncHandler(async (req, res) => {
-    res.json(req.user);
+const updateProfile = asyncHandler(async (req, res) => {
+    try {
+        const { profilePic } = req.body;
+        const userId = req.user._id;
+
+        if(!profilePic){
+            return res.status(400).json({message: "pic is required"});
+        }
+        const uploadResponse = await cloudinary.uploader.upload(profilePic)
+        const updateUser = await userModel.findByIdAndUpdate(userId, {
+            profilePic: uploadResponse.secure_url}, { new: true }); 
+
+            res.status(200).json({updateUser});
+
+    } catch (error) {
+         console.log("Error in update profile",error);
+        res.status(500).json({message:"Internal server error"});
+    }
 });
 
 
@@ -129,5 +146,5 @@ module.exports = {
     signup,
     loginUser,
     logoutUser,
-    getCurrentUser
+    updateProfile
 };

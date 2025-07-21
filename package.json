@@ -24,6 +24,9 @@
   "homepage": "https://github.com/IvinMathewAbraham/ConnectSphere#readme",
   "description": "",
   "dependencies": {
-    "cookie-parser": "^1.4.7"
+    "cloudinary": "^2.7.0",
+    "cookie-parser": "^1.4.7",
+    "io": "^1.5.3",
+    "socket": "^1.0.64"
   }
 }

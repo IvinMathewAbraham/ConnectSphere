@@ -1,43 +1,39 @@
-//const asyncHandler = require('express-async-handler');
+const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
+const User = require('../models/userModel')
 
 
+const validateToken = asyncHandler(async (req, res, next) => {
 
-// const validateToken = asyncHandler(async (req, res, next) => {
-//     let token;
-//     let authHeader = req.headers.authorization || req.headers.Authorization;
-//     if (authHeader && authHeader.startsWith("Bearer")) {
-//         token = authHeader.split(" ")[1];
-//         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-//             if (err) {
-//                 res.status(401);
-//                 throw new Error("User is not authorized");
-//             }
-//             req.user = decoded; 
-//             next(); 
-//         });
-//     } else {
-//         res.status(401);
-//         throw new Error("User is not authorized or token is missing");
-//     }
-// });
+    try {
+        const token = req.cookies.jwt;
+        if(!token){
+             res.status(401).json({message:"User is not authorized"});
+        }
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+        
+        if(!decoded){
+            res.status(401).json({message:"User is not authorized - Invalid Token"});
+        }
 
+        const user = await User.findById(decoded.userId).select("-password");
 
- const generateToken = (userId, res) => {
-    const token = jwt.sign({ userId}, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "7d",
-    });
+        if(!user){
+               res.status(404).json({message:"User not found"});
+        }
+
+        req.user = user
+
+        next();
+
+    } catch (error) {
+        console.log("Error in logout controller",error.message);
+        res.status(500).json({message:"User is not authorized or token is missing"});
+    }       
     
-    res.cookie("jwt", token, {
-        maxAge: 7*24*60*60*1000,
-        httpOnly: true, 
-        sameSite: "strict",
-        secure: process.env.NODE_ENV !== "development",
-    });
-    return token;
-};
+});
 
 module.exports = {
-  //  validateToken,
-    generateToken
+   validateToken
+
 };
