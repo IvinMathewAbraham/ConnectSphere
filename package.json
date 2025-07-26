@@ -5,8 +5,10 @@
   "scripts": {
     "backend": "cd backend && npm start",
     "backend:dev": "cd backend && npm run dev",
-    "dev": "concurrently \"npm run backend:dev\"",
-    "start": "concurrently \"npm run backend\""
+    "frontend": "cd frontend && npm start",
+    "frontend:dev": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "devDependencies": {
     "concurrently": "^9.2.0"
@@ -26,7 +28,6 @@
   "dependencies": {
     "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
-    "io": "^1.5.3",
-    "socket": "^1.0.64"
+    "socket.io": "^4.8.1"
   }
 }

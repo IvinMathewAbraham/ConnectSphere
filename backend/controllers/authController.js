@@ -16,52 +16,49 @@ const cloudinary = require( '../config/cloudinary.js');
 
 
 const signup = asyncHandler(async (req, res) => {
-    console.log("The request is:",req.body);
-    const {username, email, password} = req.body;
+  const { username, email, password } = req.body;
 
-    if(!username || !email || !password) {
-        res.status(400);
-        throw new Error('All Fields are mandatory!!');
-    }
-    if(password.length < 8){
-        res.status(400);
-        throw new Error('minimum password length is 8');
-    }
+  if (!username || !email || !password) {
+    res.status(400);
+    throw new Error('All fields are mandatory');
+  }
+  if (password.length < 8) {
+    res.status(400);
+    throw new Error('Minimum password length is 8');
+  }
+  if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+    res.status(400);
+    throw new Error('Invalid email format');
+  }
 
-    // Check if user already exists
-    const userExists = await userModel.findOne({ email });
-    if (userExists) {
-        res.status(400);
-        throw new Error('User already exists! Try another one');
-    }
+  const userExists = await userModel.findOne({ email });
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
 
-    // Hash the password
-    const salt = await bcrypt.genSalt(10)
-    const hashPassword = await bcrypt.hash(password, salt);
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
 
-    const newUser = await userModel.create({
-        username:username,
-        email:email,
-        password: hashPassword
+  const newUser = await userModel.create({
+    username:username,
+    email:email,
+    password: hashPassword,
+  });
+
+  if (newUser) {
+    generateToken(newUser._id, res)
+
+    res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
     });
-
-    // If user is created successfully, you can send a response
-    if(newUser) {
-        generateToken(newUser._id,res)
-        await newUser.save();
-        res.status(201).json({
-            _id: newUser._id,
-            username: newUser.username,
-            email:newUser.email,
-            profilePic:newUser.profilePic,
-    })
-    } else {
-        res.status(400);
-        throw new Error('Invalid user data');
-    }
-
- res.json({ message: 'Register user' });
-
+  } else {
+    res.status(400);
+    throw new Error('Invalid user data');
+  }
 }); 
 
 //@desc Login user
@@ -69,36 +66,26 @@ const signup = asyncHandler(async (req, res) => {
 
 
 const loginUser = asyncHandler(async (req, res) => {
-     const {email, password} = req.body;
-    if (!email || !password){
-        res.status(400);
-        throw new Error('All fields are required');
-    }
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error('All fields are required');
+  }
 
-    const user = await userModel.findOne({ email });
+  const user = await userModel.findOne({ email });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    res.status(401); 
+    throw new Error('Invalid credentials');
+  }
 
-    if(!user){
-         res.status(400);
-        throw new Error('Invalid credentials');
-    }
+  generateToken(user._id, res)
 
-    //compare password with hashed password 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if(!isPasswordCorrect){
-        res.status(400);
-        throw new Error('Invalid credentials');
-    }
-
-    generateToken(user._id,res)
-
-    res.status(201).json({
-            _id: user._id,
-            username: user.username,
-            email:user.email,
-            profilePic:user.profilePic,
-    })
-
-
+  res.status(200).json({
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    profilePic: user.profilePic,
+  });
 });
 
 //@desc Logout user
@@ -106,14 +93,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
 const logoutUser = asyncHandler(async (req, res) => {
-   
-    try {
-        res.cookie("jwt","",{maxAGE:0})
-        res.status(200).json({message:"Logged out sucessfully"});
-    } catch (error) {
-        console.log("Error in logout controller",error.message);
-        res.status(500).json({message:"Internal server error"});
-    }
+  res.cookie('jwt', '', { maxAge: 0 });
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 //@desc Put current user profile
@@ -140,11 +121,19 @@ const updateProfile = asyncHandler(async (req, res) => {
     }
 });
 
-
+const checkAuth = (req,res) =>{
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth",error);
+      res.status(500).json({message:"Internal server error"});
+  }
+}
 
 module.exports = {
     signup,
     loginUser,
     logoutUser,
-    updateProfile
+    updateProfile,
+    checkAuth
 };

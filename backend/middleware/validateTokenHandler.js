@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel')
 
 
+
 const validateToken = asyncHandler(async (req, res, next) => {
 
     try {
@@ -27,7 +28,7 @@ const validateToken = asyncHandler(async (req, res, next) => {
         next();
 
     } catch (error) {
-        console.log("Error in logout controller",error.message);
+        console.log("Error in logout controller1",error.message);
         res.status(500).json({message:"User is not authorized or token is missing"});
     }       
     
