@@ -15,16 +15,27 @@ import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
-  
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers, connectSocket } = useAuthStore();
 
-  console.log({ onlineUsers });
+ 
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
+
   console.log({ authUser });
+
+useEffect(() => {
+  if (authUser?._id) {
+    connectSocket(); 
+  }
+}, [authUser, connectSocket]);
+
+ 
+  
+
+  console.log({ onlineUsers });
 
   if (isCheckingAuth && !authUser)
     return (
@@ -39,8 +50,8 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
-        <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/signup" element={ <SignUpPage /> } />
+        <Route path="/login" element={<LoginPage /> } />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
       </Routes>

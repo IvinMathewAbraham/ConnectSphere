@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: `https://res.cloudinary.com/${process.env.CLOUDNARY_CLOUD_NAME}/image/upload/v1/default_avatar.png`,
+      default: `${process.env.DEFAULT_PROFILE_PIC || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}`,
     },
   },
   { timestamps: true }

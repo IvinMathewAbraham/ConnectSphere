@@ -1,5 +1,7 @@
 const User =  require('../models/userModel');
 const Message = require('../models/messageModel');
+const cloudinary = require('../config/cloudinary');
+
 const getUsersForSidebar = async(req,res) =>{
     try {
         const loggedInUserId = req.user._id;
@@ -22,6 +24,8 @@ const getMessages =async(req,res) =>{
             {senderId:userToChatId, receiverId:myId}
         ]
     })
+    .sort({ createdAt: 1 })
+    .select('_id text image senderId receiverId createdAt');
 
     res.status(200).json(messages)
    } catch (error) {
