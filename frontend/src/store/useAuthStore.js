@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
+const BASE_URL = import.meta.env.VITE_SOCKET_SERVER_URL === "development" ? "http://localhost:5001" : "/";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -87,20 +87,27 @@ export const useAuthStore = create((set, get) => ({
   connectSocket: () => {
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
-    console.log("Connecting with userId", authUser._id);
 
     const socket = io(BASE_URL, {
-      auth: {
-        userId: authUser._id,
-      },
+        auth: { userId: authUser._id },
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionAttempts: 5,
+        transports: ['websocket']
     });
-    socket.connect();
 
-    set({ socket: socket });
+    socket.on("connect", () => {
+        console.log("Socket connected:", socket.id);
+    });
+
+    socket.on("connect_error", (error) => {
+        console.error("Socket connection error:", error);
+    });
+
+    set({ socket });
 
     socket.on("getOnlineUsers", (userIds) => {
-      console.log("👥 Received from server: ", userIds);
-      set({ onlineUsers: userIds });
+        set({ onlineUsers: userIds });
     });
   },
   disconnectSocket: () => {

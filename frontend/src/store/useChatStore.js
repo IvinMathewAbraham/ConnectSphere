@@ -40,30 +40,37 @@ export const useChatStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
       set({ messages: [...messages, res.data] });
+
+      // Emit the new message through socket
+      const socket = useAuthStore.getState().socket;
+      socket.emit("newMessage", res.data);
     } catch (error) {
       toast.error(error.response.data.message);
     }
   },
 
   subscribeToMessages: () => {
-    const { selectedUser } = get();
-    if (!selectedUser) return;
-
     const socket = useAuthStore.getState().socket;
+    if (!socket) return;
 
+    socket.off("newMessage");
+    
     socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
-
-      set({
-        messages: [...get().messages, newMessage],
-      });
+        const { messages, selectedUser } = get();
+        // Check if message belongs to current chat
+        if (selectedUser && 
+            (newMessage.senderId === selectedUser._id || 
+             newMessage.receiverId === selectedUser._id)) {
+            set({ messages: [...messages, newMessage] });
+        }
     });
   },
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
-    socket.off("newMessage");
+    if (socket) {
+        socket.off("newMessage");
+    }
   },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
