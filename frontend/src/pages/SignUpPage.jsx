@@ -48,12 +48,12 @@ const SignUpPage = () => {
   });
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-screen ">
       {/* left side */}
-      <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+      <div className="flex flex-col justify-center items-center p-12 sm:p-12">
         <div className="w-full max-w-md space-y-8">
           {/* LOGO */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 mt-16">
             <div className="flex flex-col items-center gap-2 group">
               <div
                 className="size-12 rounded-xl bg-primary/10 flex items-center justify-center 
@@ -165,10 +165,7 @@ const SignUpPage = () => {
         </div>
       </div>
 
-      {/* right side */}
-      <div className="hidden lg:flex items-center justify-center bg-primary text-white">
-        <h2 className="text-4xl font-bold p-8">Welcome to ConnectSphere</h2>
-      </div>
+
     </div>
   );
 };
