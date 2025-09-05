@@ -30,7 +30,7 @@ const App = () => {
 
 
 
-  console.log({ authUser });
+
 
 useEffect(() => {
   if (authUser?._id) {
@@ -39,9 +39,6 @@ useEffect(() => {
 }, [authUser, connectSocket]);
 
  
-  
-
-  console.log({ onlineUsers });
 
   if (isCheckingAuth && !authUser)
     return (
