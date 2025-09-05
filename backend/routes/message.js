@@ -1,9 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const { validateToken } = require('../middleware/validateTokenHandler');
-const { getUsersForSidebar,getMessages,sendMessage } = require('../controllers/messageController');
+import { Router } from "express";
+import { validateToken } from "../middleware/validateTokenHandler.js";
+import { getUsersForSidebar, getMessages, sendMessage } from "../controllers/messageController.js";
 
-router.get('/users',validateToken, getUsersForSidebar);
-router.get('/:id',validateToken, getMessages);
-router.post('/send/:id',validateToken, sendMessage);
-module.exports = router;
+const router = Router();
+
+router.get("/users", validateToken, getUsersForSidebar);
+router.get("/:id", validateToken, getMessages);
+router.post("/send/:id", validateToken, sendMessage);
+
+export default router;

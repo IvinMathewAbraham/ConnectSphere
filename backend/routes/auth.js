@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const { signup,loginUser,logoutUser,updateProfile,checkAuth } = require('../controllers/authController');
-const { validateToken } = require('../middleware/validateTokenHandler');
+import { Router } from 'express';
+const router = Router();
+import { signup, loginUser, logoutUser, updateProfile, checkAuth } from '../controllers/authController';
+import { validateToken } from '../middleware/validateTokenHandler';
 
 
 router.post('/signup',signup);
@@ -12,4 +12,4 @@ router.put('/updateprofile', validateToken, updateProfile);
 
 router.get('/check',validateToken, checkAuth);
 
-module.exports = router;
+export default router;
