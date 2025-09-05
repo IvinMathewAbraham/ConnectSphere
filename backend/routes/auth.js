@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
-import { signup, loginUser, logoutUser, updateProfile, checkAuth } from '../controllers/authController';
-import { validateToken } from '../middleware/validateTokenHandler';
+import { signup, loginUser, logoutUser, updateProfile, checkAuth } from '../controllers/authController.js';
+import { validateToken } from '../middleware/validateTokenHandler.js';
 
 
 router.post('/signup',signup);
