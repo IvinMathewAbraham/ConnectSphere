@@ -1,24 +1,24 @@
-const express = require('express');
-const connectDB = require('./config/dbConnection.js');
-const dotenv = require('dotenv');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const { app, server } = require('./config/socket.js');
-const path = require('path');
-const authRoutes = require('./routes/auth.js');
-const messageRoutes = require('./routes/message.js');
+import express from 'express';
+import connectDB from './config/dbConnection.js';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { app, server } from './config/socket.js';
+import path from 'path';
+import authRoutes from './routes/auth.js';
+import messageRoutes from './routes/message.js';
 
 dotenv.config();
 connectDB();
 
-const __dirname = __dirname; // already available in CommonJS
+const __dirname = path.resolve();
 
 const port = process.env.PORT || 5001;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: "http://localhost:5173",
     credentials: true,
 }));
 
@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+        res.sendFile(path.join(__dirname,"../frontend", "dist", "index.html"));
     });
 }
 
