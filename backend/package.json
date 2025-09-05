@@ -4,8 +4,9 @@
   "description": "The is express project for my backend api",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+    
   },
   "author": "Ivin Mathew Abraham",
   "license": "MIT",
