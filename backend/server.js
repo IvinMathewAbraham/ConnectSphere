@@ -1,17 +1,17 @@
-const express = require('express');
+import express from 'express';
+import connectDB from './config/dbConnection.js';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { app, server } from './config/socket.js';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const connectDB = require('./config/dbConnection');
-const dotenv = require('dotenv').config();
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const { app, server } = require('./config/socket');
-
-const path = require('path');
-
-
+dotenv.config();
 connectDB();
 
-const __dirname = path.resolve()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const port = process.env.PORT || 5001;
 
@@ -22,17 +22,19 @@ app.use(cors({
     credentials: true,
 }));
 
+// API routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/messages', require('./routes/message'));
 
- if (process.env.NODE_ENV === 'production') {
-     app.use(express.static(path.join(__dirname, '../frontend/build')));
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(join(__dirname, '../frontend/dist')));
 
-     app.get('*', (req, res) => {
-            res.sendFile(path.resolve(__dirname, "../frontend","dist","index.html"));
-        });
- }
- 
+    app.get('*', (req, res) => {
+        res.sendFile(join(__dirname, '../frontend/dist/index.html'));
+    });
+}
+
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
