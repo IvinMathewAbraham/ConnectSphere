@@ -1,9 +1,9 @@
-const { Server } = require("socket.io");
-const http = require("http");
-const express = require("express");
+import { Server } from "socket.io";
+import { createServer } from "http";
+import express from "express";
 
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -41,4 +41,4 @@ function getReceiverSocketId(userId) {
   return userSocketMap[userId];
 }
 
-module.exports = { io, app, server, getReceiverSocketId };
+export default { io, app, server, getReceiverSocketId };

@@ -56,7 +56,7 @@ const sendMessage = async(req,res) =>{
         await newMessage.save();
 
         // Add socket emission
-        const { io, getReceiverSocketId } = require('../config/socket');
+        const { io, getReceiverSocketId } = require('../config/socket').default;
         const receiverSocketId = getReceiverSocketId(receiverId);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("newMessage", newMessage);
