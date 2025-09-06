@@ -41,9 +41,10 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 // Catch-all for React routes
-app.get("*", (req, res) => {
+app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
+
 }
 
 server.listen(port, () => {
