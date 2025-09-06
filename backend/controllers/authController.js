@@ -3,8 +3,6 @@ import bcrypt from "bcrypt";
 import UserModel from "../models/userModel.js";
 import { generateToken } from "../middleware/generateToken.js";
 import cloudinary from "../config/cloudinary.js";
-import jwt from "jsonwebtoken";
-import {json} from "express";
 
 // @desc Signup
 // @route POST /api/auth/signup
