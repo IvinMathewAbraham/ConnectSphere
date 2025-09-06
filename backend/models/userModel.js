@@ -8,10 +8,7 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: [true, "Please add a username"],
-      minlength: [3, "Username must be at least 3 characters"],
-      maxlength: [50, "Username cannot exceed 50 characters"],
       trim: true,
-      match: [/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"],
     },
     email: {
       type: String,
@@ -24,7 +21,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Please add a password"],
-      minlength: [8, "Password must be at least 8 characters"],
     },
     profilePic: {
       type: String,
