@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import UserModel from "../models/userModel.js";
 import { generateToken } from "../middleware/generateToken.js";
 import cloudinary from "../config/cloudinary.js";
+import jwt from "jsonwebtoken";
+import {json} from "express";
 
 // @desc Signup
 // @route POST /api/auth/signup
@@ -34,14 +36,14 @@ const signup = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
 
-  const newUser = await UserModel.create({
-    username,
-    email,
+   const newUser = await userModel.create({
+    username:username,
+    email:email,
     password: hashPassword,
   });
 
   if (newUser) {
-    generateToken(newUser._id, res);
+    generateToken(newUser._id, res)
 
     res.status(201).json({
       _id: newUser._id,
@@ -71,7 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials");
   }
 
-  generateToken(user._id, res);
+  generateToken(user._id, res)
 
   res.status(200).json({
     _id: user._id,
