@@ -9,7 +9,6 @@ import { dirname, join } from 'path';
 import authRoutes from './routes/auth.js';
 import messageRoutes from './routes/message.js';
 
-// Recreate __dirname and __filename in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
