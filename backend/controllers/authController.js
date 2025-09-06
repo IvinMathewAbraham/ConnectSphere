@@ -34,7 +34,7 @@ const signup = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
 
-   const newUser = await userModel.create({
+   const newUser = await UserModel.create({
     username:username,
     email:email,
     password: hashPassword,
