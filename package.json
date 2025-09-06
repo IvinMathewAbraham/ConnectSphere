@@ -1,7 +1,7 @@
 {
   "name": "connectsphere",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "dev:backend": "nodemon backend/server.js",
