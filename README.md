@@ -1,21 +1,39 @@
 # ConnectSphere
 
 ## Project Description
-ConnectSphere is a revolutionary platform that facilitates seamless connections and collaborations between individuals and businesses. The goal of this project is to create an intuitive and user-friendly interface that enhances social networking and professional growth.
+ConnectSphere is a full-stack real-time communication platform built with modern web technologies. It enables users to connect, communicate, and collaborate seamlessly through a responsive web interface and robust backend infrastructure.
 
 ## Features
-- User-friendly interface
-- Real-time messaging and notifications
-- Profile customization options
-- Connection suggestions based on interests
-- Robust privacy settings
-- Integration with popular social media platforms
+- **Real-time Messaging**: Instant message delivery using Socket.io
+- **User Authentication**: Secure authentication with JWT and password hashing (bcrypt)
+- **Image Support**: Cloud-based image storage and management with Cloudinary
+- **Responsive UI**: Modern, mobile-friendly interface with Tailwind CSS and DaisyUI
+- **State Management**: Efficient client-side state handling with Zustand
+- **Smooth Animations**: Enhanced UX with Framer Motion
+- **Toast Notifications**: User feedback with React Hot Toast
+- **Database Integration**: MongoDB with Mongoose ODM
 
 ## Tech Stack
-- **Frontend:** React.js, Redux, CSS
-- **Backend:** Node.js, Express
-- **Database:** MongoDB
-- **Authentication:** JSON Web Tokens (JWT)
+
+### Backend
+- **Runtime**: Node.js with Express.js
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT (jsonwebtoken) & Bcrypt
+- **Real-time**: Socket.io
+- **Storage**: Cloudinary
+- **Development**: Nodemon for hot reloading
+
+### Frontend
+- **Framework**: React 19
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS with DaisyUI
+- **Routing**: React Router
+- **HTTP Client**: Axios
+- **State Management**: Zustand
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Notifications**: React Hot Toast
+- **Real-time**: Socket.io Client
 
 ## Installation
 1. Clone the repository:
